@@ -1,8 +1,8 @@
 from models import FoodEntry
 from state import DietAgentState
+from langchain.tools import tool
 
-
-def add_food(state:DietAgentState, food:FoodEntry) -> DietAgentState:
+@tool
+def add_food(state: DietAgentState, food: FoodEntry) -> DietAgentState:
     state.food_entries.append(food)
-    return state 
-
+    return state
