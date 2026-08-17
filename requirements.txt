@@ -6,3 +6,4 @@ requests
 tavily-python
 python-dotenv
 langsmith
+pydantic
