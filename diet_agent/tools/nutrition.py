@@ -1,13 +1,18 @@
 import os
+
 from tavily import TavilyClient
 from dotenv import load_dotenv
-from models import NutritionInfo
 
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
+from langchain.tools import tool
+from state import DietAgentState
+from langchain.tools import tool, ToolRuntime
+from models import NutritionInfo
 
 
 load_dotenv()
+
 
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
@@ -26,15 +31,11 @@ def search_nutrition(food: str):
     return response["results"]
 
 
-
-
-
-
-
 llm = ChatGroq(
     model="llama-3.3-70b-versatile",
     temperature=0
 )
+
 
 prompt = ChatPromptTemplate.from_messages([
     (
@@ -49,8 +50,9 @@ prompt = ChatPromptTemplate.from_messages([
         - fat in grams
 
         Ignore all other information.
-        If multiple sources provide values, choose the most reliable
-        and reasonable value."""
+
+        If multiple sources provide values, choose the most
+        reliable and reasonable value."""
     ),
     (
         "human",
@@ -58,10 +60,15 @@ prompt = ChatPromptTemplate.from_messages([
     )
 ])
 
+
 structured_llm = prompt | llm.with_structured_output(NutritionInfo)
+@tool
+def extract_nutrition(
+    food: str,
+    runtime: ToolRuntime[DietAgentState]
+) -> NutritionInfo:
+    """Get nutrition for the exact food and quantity provided, such as '2 eggs' or '1 bowl rice', and add it to today's nutrition log."""
 
-
-def extract_nutrition(food: str):
     results = search_nutrition(food)
 
     food_data = "\n\n".join(
@@ -72,10 +79,7 @@ def extract_nutrition(food: str):
         "food_data": food_data
     })
 
+    runtime.state["nutrition_entries"].append(nutrition)
+    
+
     return nutrition
-
-
-
-if __name__ == "__main__":
-    nutrition = extract_nutrition("2 eggs")
-    print(nutrition)

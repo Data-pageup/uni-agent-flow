@@ -1,10 +1,15 @@
 from models import WorkoutEntry
+from langchain.tools import tool, ToolRuntime
 from state import DietAgentState
-from langchain.tools import tool
 
 
 @tool
-def add_workout(state: DietAgentState, workout: WorkoutEntry) -> DietAgentState:
+def add_workout(
+    workout: WorkoutEntry,
+    runtime: ToolRuntime[DietAgentState]
+) -> str:
     """Add a workout entry to the user's daily workout log."""
-    state.workout_entries.append(workout)
-    return state
+
+    runtime.state["workout_entries"].append(workout)
+
+    return f"Added {workout.focus.value} workout to today's log."

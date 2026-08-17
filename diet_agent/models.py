@@ -77,7 +77,7 @@ class WorkoutEntry(BaseModel):
     focus:Focus
     duration:int
     unit:str
-    time:str 
+    time:str = "now"
 
 class NutritionInfo(BaseModel):
     """A class representing the nutritional information of a food."""

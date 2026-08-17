@@ -55,9 +55,10 @@ print()
 
 
 state = DietAgentState(
+    messages=[],
     user=user,
-    food_entries=[food],
-    workout_entries=[workout],
+    food_entries=[],
+    workout_entries=[],
     nutrition_entries=[],
     date="2026-08-17"
 )
