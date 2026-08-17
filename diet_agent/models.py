@@ -78,3 +78,11 @@ class WorkoutEntry(BaseModel):
     duration:int
     unit:str
     time:str 
+
+class NutritionInfo(BaseModel):
+    """A class representing the nutritional information of a food."""
+    food_name: str
+    calories: float
+    protein_g: float
+    carbs_g: float
+    fat_g: float
