@@ -1,6 +1,21 @@
-from models import Focus, UserProfile, Goal , WorkoutType , DietType , FoodEntry , WorkoutEntry
-from state import DietAgentState 
+from models import (
+    Focus,
+    UserProfile,
+    Goal,
+    WorkoutType,
+    DietType,
+    FoodEntry,
+    WorkoutEntry,
+    NutritionInfo
+)
+
+from state import DietAgentState
+
 from tools.add_food import add_food
+from tools.add_workout import add_workout
+from tools.nutrition import extract_nutrition
+from tools.summary import daily_summary
+
 
 user = UserProfile(
     name="Ganesh",
@@ -8,14 +23,15 @@ user = UserProfile(
     sex="Male",
     height_cm=178,
     weight_kg=74,
-    goal= Goal.GENERAL_FITNESS,
+    goal=Goal.GENERAL_FITNESS,
     workout_type=WorkoutType.GYM,
     diet_type="Non-vegetarian"
 )
 
 print(user)
+print()
 
-print( )
+
 food = FoodEntry(
     food_name="Egg",
     quantity=2,
@@ -24,26 +40,44 @@ food = FoodEntry(
 )
 
 print(food)
-print( )
+print()
 
-Workout = WorkoutEntry(
+
+workout = WorkoutEntry(
     focus=Focus.CHEST,
     duration=45,
     unit="minutes",
     time="06:30 Am"
 )
 
-print(Workout)
-print( )
+print(workout)
+print()
 
 
 state = DietAgentState(
-    user =user,
-    food_entries = [food],
-    workout_entries=[Workout],
-    date = "2026-08-17"
+    user=user,
+    food_entries=[food],
+    workout_entries=[workout],
+    nutrition_entries=[],
+    date="2026-08-17"
 )
+
 print(state)
+print()
 
 
-print(add_food)
+nutrition = extract_nutrition.invoke({
+    "food": "2 eggs"
+})
+
+state.nutrition_entries.append(nutrition)
+
+print(state.nutrition_entries)
+print()
+
+
+summary = daily_summary.invoke({
+    "state": state
+})
+
+print(summary)

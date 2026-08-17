@@ -1,5 +1,6 @@
 from models import UserProfile , FoodEntry , WorkoutEntry 
 from pydantic import BaseModel
+from models import NutritionInfo
 
 
 
@@ -8,4 +9,5 @@ class DietAgentState(BaseModel):
     user:UserProfile  
     food_entries:list[FoodEntry]
     workout_entries: list[WorkoutEntry]
+    nutrition_entries: list[NutritionInfo]
     date:str
