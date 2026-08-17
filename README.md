@@ -1,18 +1,18 @@
 # AI Diet & Fitness Agent
 
-> Natural Language → Tool Calling → Structured State → Nutrition Intelligence
+Natural Language → Tool Calling → Structured State → Nutrition Intelligence
 
-An AI-powered Diet & Fitness Agent that lets you log food and workouts, retrieve nutrition data, and get a daily summary — just by talking to it naturally.
+An AI-powered Diet & Fitness Agent that lets you log food and workouts, retrieve nutrition data, and get a daily summary just by talking to it naturally.
 
 ```
 "I ate 2 eggs for breakfast and then did a 45 minute chest workout. Give me today's summary."
 ```
 
-**Status:** Phase 1 — Core Agent System ✅
+**Status:** Phase 1 — Core Agent System (complete)
 
 ---
 
-## ✨ What it does
+## What it does
 
 Instead of manually filling forms, you describe what you ate or did, and the agent:
 
@@ -20,7 +20,7 @@ Instead of manually filling forms, you describe what you ate or did, and the age
 2. Decides which tool(s) to call
 3. Updates a structured, validated application state
 4. Retrieves real nutrition data from the web
-5. Generates a clean daily summary
+5. Generates a daily summary
 
 ```
 User → Natural Language → LLM Agent → Tool Selection
@@ -30,23 +30,23 @@ User → Natural Language → LLM Agent → Tool Selection
 
 ---
 
-## 🧱 Tech Stack
+## Tech Stack
 
-| Component   | Purpose                                                   |
-|-------------|------------------------------------------------------------|
-| **Python**  | Core language                                              |
-| **Pydantic**| Structured, validated data models                          |
-| **LangChain** | LLM integration, tool creation, structured output, agent creation |
-| **LangGraph** | Agent state management & tool execution under the hood   |
-| **Groq**    | LLM provider (current model: `openai/gpt-oss-120b`)         |
-| **Tavily**  | Web search for nutrition information                        |
-| **python-dotenv** | Loads API keys from `.env`                             |
+| Component | Purpose |
+|---|---|
+| Python | Core language |
+| Pydantic | Structured, validated data models |
+| LangChain | LLM integration, tool creation, structured output, agent creation |
+| LangGraph | Agent state management and tool execution under the hood |
+| Groq | LLM provider (current model: `openai/gpt-oss-120b`) |
+| Tavily | Web search for nutrition information |
+| python-dotenv | Loads API keys from `.env` |
 
-> **Model note:** `llama-3.3-70b-versatile` was dropped (became unavailable) and `qwen/qwen3.6-27b` was dropped (too much reasoning overhead for simple tool calls). Currently using `openai/gpt-oss-120b` for clean tool-calling behavior.
+**Model note:** `llama-3.3-70b-versatile` was dropped (became unavailable), and `qwen/qwen3.6-27b` was dropped (too much reasoning overhead for a simple tool-calling workflow). Currently using `openai/gpt-oss-120b` for clean tool-calling behavior.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 diet_agent/
@@ -65,13 +65,13 @@ diet_agent/
 └── main.py                   # Example / manual test entry point
 ```
 
-> Structure will evolve as the project grows (FastAPI backend + UI planned).
+Structure will evolve as the project grows (FastAPI backend + UI planned).
 
 ---
 
-## 🗃️ Data Models
+## Data Models
 
-All data is modeled with **Pydantic** instead of raw dictionaries.
+All data is modeled with Pydantic instead of raw dictionaries.
 
 - **`UserProfile`** — `name`, `age`, `sex`, `height_cm`, `weight_kg`, `goal`, `workout_type`, `diet_type`
 - **`FoodEntry`** — `food_name`, `quantity`, `unit`, `time`
@@ -81,7 +81,7 @@ All data is modeled with **Pydantic** instead of raw dictionaries.
 
 ---
 
-## 🔧 Tools
+## Tools
 
 | Tool | Description |
 |---|---|
@@ -90,11 +90,11 @@ All data is modeled with **Pydantic** instead of raw dictionaries.
 | `extract_nutrition` | Tavily search → raw nutrition text → Groq structured extraction → `NutritionInfo` |
 | `daily_summary` | Reads state and produces a formatted daily report |
 
-**Key design decision:** tools read/write the *real* application state via `runtime.state` rather than letting the LLM construct state itself. This prevents the model from inventing user data (see [Architecture Notes](#-architecture-notes) below).
+**Key design decision:** tools read/write the real application state via `runtime.state` rather than letting the LLM construct state itself. This prevents the model from inventing user data (see Architecture Notes below).
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Clone & install dependencies
 
@@ -129,7 +129,7 @@ python main.py
 
 ---
 
-## 💡 Example
+## Example
 
 **Input:**
 ```
@@ -149,10 +149,10 @@ Food consumed:
 - eggs: 2 pieces at now
 
 Nutrition:
-- Calories: 77.50 kcal
-- Protein: 6.30 g
-- Carbs: 0.56 g
-- Fat: 5.30 g
+- Calories: 155.00 kcal
+- Protein: 12.60 g
+- Carbs: 1.12 g
+- Fat: 10.60 g
 
 Workouts:
 - Chest: 45 minutes at now
@@ -160,9 +160,9 @@ Workouts:
 
 ---
 
-## 🏗️ Architecture Notes
+## Architecture Notes
 
-Early versions let the LLM generate the *entire* application state, which caused it to hallucinate user data (fake names, ages, weights). This was fixed by restructuring the flow so the **real application state drives the tools**, and the LLM only supplies the minimal arguments a tool needs:
+Early versions let the LLM generate the entire application state, which caused it to hallucinate user data (fake names, ages, weights). This was fixed by restructuring the flow so the real application state drives the tools, and the LLM only supplies the minimal arguments a tool needs:
 
 ```
 REAL APPLICATION STATE → Agent Runtime → Tools
@@ -172,7 +172,7 @@ Tools then read/write state through `runtime.state`, e.g. `runtime.state["food_e
 
 ---
 
-## ✅ Tested So Far
+## Tested So Far
 
 - Food logging (`add_food`)
 - Workout logging (`add_workout`)
@@ -180,7 +180,7 @@ Tools then read/write state through `runtime.state`, e.g. `runtime.state["food_e
 - Daily summary generation
 - End-to-end multi-tool orchestration
 
-## 🚧 Roadmap
+## Roadmap
 
 - [ ] Fix nutrition quantity handling (e.g. "2 eggs" should scale nutrition, not default to 1 egg)
 - [ ] Persistent storage (SQLite)
@@ -192,12 +192,12 @@ Tools then read/write state through `runtime.state`, e.g. `runtime.state["food_e
 
 ---
 
-## 📄 Documentation
+## Documentation
 
 Full project documentation (architecture diagrams, data models, problem log) is available as a PDF: `diet_agent_documentation.pdf` (LaTeX source: `diet_agent_documentation.tex`).
 
 ---
 
-## 👤 Author
+## Author
 
-**Amirtha Ganesh R.**
+Amirtha Ganesh R.
